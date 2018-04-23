@@ -30,6 +30,14 @@ def read_image(directory):
     num_training = len(train_images)
     num_testing = len(test_images)
 
+    # Reshape images to make it 2D
+    train_images = np.reshape(np.array(train_images), [num_training, 28, 28, 1])
+    test_images = np.reshape(np.array(test_images), [num_testing, 28, 28, 1])
+
+    # normalize the data
+    train_images = np.divide(train_images, 255)
+    test_images = np.divide(test_images, 255)
+
     # Create one hot encoding
     train_labels = create_one_hot(train_labels)
     test_labels = create_one_hot(test_labels)
