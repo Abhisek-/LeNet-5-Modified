@@ -89,7 +89,7 @@ def create_model(learning_rate):
 
     return input_image, labels, accuracy, loss, optimizer
 
-def train(mndir, epochs, batch_size):
+def train(mndir, epochs, batch_size, save_path):
     '''
     Train LeNet-5 model
     '''
@@ -104,12 +104,15 @@ def train(mndir, epochs, batch_size):
 
     init = tf.global_variables_initializer()
 
+    saver = tf.train.Saver()
+
     with tf.Session() as sess:
         sess.run(init)
 
         for epoch in range(epochs):
             accuracies = []
             losses = []
+            best_accuracy = float('inf')
             for batch_i in range(train_len // batch_size):
                 start_idx = batch_size * batch_i
                 end_idx = start_idx + batch_size
@@ -127,9 +130,15 @@ def train(mndir, epochs, batch_size):
                         sum(losses) / len(losses),
                         sum(accuracies) / len(accuracies)))
 
+            if ((train_len // batch_size) - batch_i <= batch_size and
+                best_accuracy > sum(accuracies) / len(accuracies)):
+                saver.save(sess, save_path)
+                best_accuracy = sum(accuracies) / len(accuracies)
+
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument('mndir')
+    parser.add_argument('savepath')
     args = parser.parse_args()
     train(args.mndir, 5, 128)
