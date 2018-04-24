@@ -135,10 +135,50 @@ def train(mndir, epochs, batch_size, save_path):
                 saver.save(sess, save_path)
                 best_accuracy = sum(accuracies) / len(accuracies)
 
+def test(mndir, batch_size, savepath):
+    (train_images, train_labels,
+     test_images, test_labels) = read_image(mndir)
+
+    test_len = test_images.shape[0]
+
+    (input_image, labels, accuracy,
+     loss, optimizer) = create_model(0.0001)
+
+    init = tf.global_variables_initializer()
+
+    saver = tf.train.Saver()
+
+    with tf.Session() as sess:
+        sess.run(init)
+
+        saver.restore(sess, savepath)
+
+        accuracies = []
+        losses = []
+        for batch_i in range(test_len // batch_size):
+            start_idx = batch_size * batch_i
+            end_idx = start_idx + batch_size
+            _loss, acc = sess.run([loss, accuracy],
+                                  feed_dict = {input_image: test_images[start_idx: end_idx,],
+                                               labels: test_labels[start_idx: end_idx,]})
+
+            accuracies.append(acc)
+            losses.append(_loss)
+
+            print('Batch: {}/{} Loss: {} Accuracy: {}'.format(
+                batch_i, test_len // batch_size,
+                sum(losses) / len(losses),
+                sum(accuracies) / len(accuracies)))
+
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument('mndir')
     parser.add_argument('savepath')
+    parser.add_argument('--train')
+    parser.add_argument('--test')
     args = parser.parse_args()
-    train(args.mndir, 5, 128)
+    if args.train:
+        train(args.mndir, 5, 128, args.savepath)
+    elif args.test:
+        test(args.mndir, 128, args.savepath)
