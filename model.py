@@ -100,7 +100,7 @@ def train(mndir, epochs, batch_size, save_path):
     train_len = train_images.shape[0]
 
     (input_image, labels, accuracy,
-     loss, optimizer) = create_model(0.0001)
+     loss, optimizer) = create_model(0.0005)
 
     init = tf.global_variables_initializer()
 
@@ -142,7 +142,7 @@ def test(mndir, batch_size, savepath):
     test_len = test_images.shape[0]
 
     (input_image, labels, accuracy,
-     loss, optimizer) = create_model(0.0001)
+     loss, optimizer) = create_model(0.0005)
 
     init = tf.global_variables_initializer()
 
@@ -179,6 +179,6 @@ if __name__ == '__main__':
     parser.add_argument('--test')
     args = parser.parse_args()
     if args.train:
-        train(args.mndir, 5, 128, args.savepath)
+        train(args.mndir, 5, 64, args.savepath)
     elif args.test:
-        test(args.mndir, 128, args.savepath)
+        test(args.mndir, 64, args.savepath)
