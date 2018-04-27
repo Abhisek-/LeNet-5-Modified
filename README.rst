@@ -41,3 +41,11 @@ Here are the results (training) I got for different configurations
 +========+============+===============+=========+============+
 |      5 |         64 |        0.0005 | 0.04527 | **98.377** |
 +--------+------------+---------------+---------+------------+
+
+-----
+Usage
+-----
+
+**training**: python model.py --train true <MNIST-path> <model-save-path>
+
+**training**: python model.py --test true <MNIST-path> <model-save-path>
